@@ -109,7 +109,7 @@ html { scroll-behavior: smooth; }
 
 .kl-progress { position: fixed; top: 0; left: 0; right: 0; height: 2.5px; z-index: 60; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--violet), var(--violet-2)); will-change: transform; }
 
-.kl-wrap { position: relative; z-index: 2; }
+.kl-wrap { position: relative; z-index: 2; overflow-x: clip; }
 .kl-container { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 28px; }
 
 .kl-nav {
@@ -131,7 +131,8 @@ html { scroll-behavior: smooth; }
 .kl-links a:hover::after, .kl-links a.active::after { transform: translateX(-50%) scaleX(1); }
 .kl-links a.active { color: var(--violet); }
 .kl-nav-cta { padding: 10px 18px; font-size: 14px; }
-.kl-burger { display: none; background: none; border: none; color: var(--ink); cursor: pointer; padding: 6px; }
+.kl-burger { display: none; background: none; border: none; color: var(--ink); cursor: pointer; padding: 10px; }
+.kl-burger:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 8px; }
 
 .kl-btn { display: inline-flex; align-items: center; gap: 9px; font-family: 'Hanken Grotesk'; font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; text-decoration: none; transition: transform .2s ease, box-shadow .25s ease, background .2s, border-color .2s, color .2s; }
 .kl-btn svg { transition: transform .25s cubic-bezier(.2,.7,.2,1); }
@@ -293,14 +294,19 @@ html { scroll-behavior: smooth; }
   .kl-prod-grid { grid-template-columns: 1fr; }
   .kl-why { grid-template-columns: 1fr; gap: 36px; }
   .kl-steps { grid-template-columns: 1fr 1fr; }
-  .kl-mobile.open { display: block; position: fixed; inset: 82px 0 0; z-index: 39; background: var(--bg); padding: 28px; animation: klUp .4s ease forwards; }
-  .kl-mobile.open a { display: block; font-family: 'Sora'; font-weight: 600; font-size: 1.6rem; color: var(--ink); padding: 16px 0; text-decoration: none; border-bottom: 1px solid var(--line); }
+  .kl-mobile.open { display: block; position: fixed; inset: 0; z-index: 39; background: var(--bg); padding: 104px 28px max(28px, env(safe-area-inset-bottom)); overflow-y: auto; animation: klUp .4s ease forwards; }
+  .kl-mobile.open a:not(.kl-btn) { display: block; font-family: 'Sora'; font-weight: 600; font-size: 1.6rem; color: var(--ink); padding: 16px 0; text-decoration: none; border-bottom: 1px solid var(--line); }
   .kl-mobile.open .kl-btn { margin-top: 24px; width: 100%; justify-content: center; }
 }
 @media (max-width: 560px) {
   .kl-container { padding: 0 18px; }
   .kl-steps { grid-template-columns: 1fr; }
   .kl-cta { padding: 54px 24px; margin: 0 18px 90px; }
+  .kl-btn { min-height: 44px; }
+  .kl-hero-cta { flex-direction: column; align-items: stretch; }
+  .kl-hero-cta .kl-btn { width: 100%; justify-content: center; }
+  .kl-float { display: none; }
+  .kl-glow2 { animation: none; opacity: .5; }
 }
 `;
 
@@ -385,6 +391,11 @@ export default function KunlatekLanding() {
     return () => io.disconnect();
   }, []);
 
+  useEffect(() => {
+    document.documentElement.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.documentElement.style.overflow = ""; };
+  }, [menuOpen]);
+
   const onHeroMove = (e) => {
     if (!parallaxRef.current) return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -410,14 +421,14 @@ export default function KunlatekLanding() {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <a href={WHATSAPP} target="_blank" rel="noreferrer" className="kl-btn kl-btn-primary kl-nav-cta">Iniciar projeto <ArrowUpRight size={16} /></a>
-              <button className="kl-burger" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
+              <button className="kl-burger" onClick={() => setMenuOpen((v) => !v)} aria-expanded={menuOpen} aria-label="Menu">
                 {menuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>
         </nav>
 
-        <div className={`kl-mobile ${menuOpen ? "open" : ""}`}>
+        <div className={`kl-mobile ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
           {navItems.map((n) => (
             <a key={n.href} href={n.href} onClick={() => setMenuOpen(false)}>{n.label}</a>
           ))}

@@ -202,7 +202,10 @@ const CSS = `
 .klc-modal-foot .klc-btn-ghost { margin-right: auto; }
 
 .klc-fab {
-  position: fixed; left: 18px; bottom: 18px; z-index: 999;
+  position: fixed;
+  left: max(18px, env(safe-area-inset-left));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 999;
   width: 46px; height: 46px; border-radius: 14px; cursor: pointer;
   background: var(--surface); border: 1px solid var(--line-strong); color: var(--violet);
   display: grid; place-items: center; box-shadow: 0 8px 24px rgba(22,17,40,0.12);
