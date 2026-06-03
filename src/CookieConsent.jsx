@@ -32,8 +32,8 @@ const CATEGORIES = [
 const ALL_ON  = { necessary: true, analytics: true,  marketing: false };
 const ALL_OFF = { necessary: true, analytics: false, marketing: false };
 
-/* ---- persistência ---- */
 function readConsent() {
+  if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
@@ -52,8 +52,8 @@ function writeConsent(prefs) {
   return payload;
 }
 
-/* ---- carrega GA dinamicamente (só após opt-in) ---- */
 function loadGA() {
+  if (typeof window === "undefined") return;
   if (window.__kl_ga_loaded) return;
   window.__kl_ga_loaded = true;
   window.dataLayer = window.dataLayer || [];
@@ -97,7 +97,6 @@ const CSS = `
   font-family: 'Hanken Grotesk', sans-serif; -webkit-font-smoothing: antialiased;
 }
 
-/* banner */
 .klc-banner {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000;
   display: flex; justify-content: center; padding: 18px; pointer-events: none;
@@ -123,7 +122,6 @@ const CSS = `
 .klc-banner-txt a:hover { text-decoration: underline; }
 .klc-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
-/* botões */
 .klc-btn {
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
   font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; font-size: 14px;
@@ -138,7 +136,6 @@ const CSS = `
 .klc-btn-text { background: transparent; color: var(--muted); padding: 11px 8px; }
 .klc-btn-text:hover { color: var(--ink); }
 
-/* modal */
 .klc-overlay {
   position: fixed; inset: 0; z-index: 1001;
   background: rgba(22,17,40,0.42); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
@@ -190,7 +187,6 @@ const CSS = `
   display: inline-flex; align-items: center; gap: 5px;
 }
 
-/* switch */
 .klc-switch { flex: none; position: relative; width: 46px; height: 26px; }
 .klc-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .klc-track { position: absolute; inset: 0; border-radius: 999px; background: var(--line-strong); transition: background .25s; }
@@ -205,7 +201,6 @@ const CSS = `
 .klc-modal-foot { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; padding: 18px 26px 24px; border-top: 1px solid var(--line); }
 .klc-modal-foot .klc-btn-ghost { margin-right: auto; }
 
-/* FAB */
 .klc-fab {
   position: fixed; left: 18px; bottom: 18px; z-index: 999;
   width: 46px; height: 46px; border-radius: 14px; cursor: pointer;

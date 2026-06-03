@@ -1,9 +1,26 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App";
+import { ViteReactSSG } from "vite-react-ssg";
+import KunlatekLanding from "./KunlatekLanding";
+import CookieConsent from "./CookieConsent";
+import Privacidade from "./Privacidade";
 
-createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+const Home = () => (
+  <>
+    <KunlatekLanding />
+    <CookieConsent />
+  </>
 );
+
+const PrivacidadePage = () => (
+  <>
+    <Privacidade />
+    <CookieConsent />
+  </>
+);
+
+export const createRoot = ViteReactSSG({
+  routes: [
+    { path: "/", Component: Home },
+    { path: "/privacidade", Component: PrivacidadePage },
+  ],
+});

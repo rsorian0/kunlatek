@@ -311,7 +311,7 @@ const services = [
   { icon: Compass, t: "Consultoria & tecnologia", d: "Arquitetura, integração e estratégia digital para você tomar decisões técnicas com segurança." },
 ];
 const values = [
-  { icon: Users, t: "Modelo cooperativo", d: "Somos uma cooperativa de tecnologia: quem constrói é dono do próprio trabalho." },
+  { icon: Users, t: "Modelo cooperativo", d: "Somos uma cooperativa de desenvolvimento de software: quem constrói é dono do próprio trabalho." },
   { icon: HeartHandshake, t: "Centrado em pessoas", d: "Traduzimos complexidade em interfaces inteligíveis e amigáveis." },
   { icon: Sparkles, t: "Impacto social positivo", d: "Acreditamos que tecnologia bem feita transforma realidades." },
   { icon: Code2, t: "Sob medida de verdade", d: "Cada solução nasce do seu problema, não de um molde pronto." },
@@ -495,7 +495,7 @@ export default function KunlatekLanding() {
             <div className="kl-head reveal">
               <span className="kl-kicker">Por que a Kunlatek</span>
               <h2 className="kl-h2">Uma ponte amigável entre tecnologia e pessoas.</h2>
-              <p className="kl-sec-lead">Nascemos como cooperativa de tecnologia com uma missão clara: viabilizar uma interface inteligível e amigável entre soluções tecnológicas e pessoas. Tecnologia bem feita não precisa ser complicada. Precisa ser humana.</p>
+              <p className="kl-sec-lead">Nascemos como cooperativa de desenvolvimento de software com uma missão clara: viabilizar uma interface inteligível e amigável entre soluções tecnológicas e pessoas. Tecnologia bem feita não precisa ser complicada. Precisa ser humana.</p>
             </div>
             <div className="kl-values">
               {values.map((v, i) => {
@@ -576,7 +576,7 @@ export default function KunlatekLanding() {
             <div className="kl-foot-top">
               <div className="kl-foot-brand">
                 <a href="#top" className="kl-logo" aria-label="Kunlatek"><BrandLogo height={24} /></a>
-                <p>Cooperativa de tecnologia que constrói software sob medida com foco em pessoas.</p>
+                <p>Cooperativa de desenvolvimento de software que constrói soluções sob medida com foco em pessoas.</p>
                 <div className="kl-foot-social">
                   <a href="https://www.linkedin.com/company/kunlatek/" target="_blank" rel="noreferrer" aria-label="LinkedIn da Kunlatek"><Linkedin size={18} /></a>
                   <a href="https://www.instagram.com/kunlatek/" target="_blank" rel="noreferrer" aria-label="Instagram da Kunlatek"><Instagram size={18} /></a>
