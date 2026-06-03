@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kunlatek</title>
+    <script>
+      // GitHub Pages SPA redirect — preserva o path para o React tratar
+      var path = window.location.pathname;
+      sessionStorage.setItem('spa_redirect', path + window.location.search + window.location.hash);
+      window.location.replace('/');
+    </script>
+  </head>
+  <body></body>
+</html>

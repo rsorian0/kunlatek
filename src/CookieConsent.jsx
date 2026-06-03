@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Cookie, X, Shield, BarChart3, Megaphone, Check } from "lucide-react";
+import { Cookie, X, Shield, BarChart3, Megaphone, Check, Clock } from "lucide-react";
 
-const STORAGE_KEY = "kunlatek_cookie_consent";
-const CONSENT_VERSION = 1;
+const STORAGE_KEY = "cc_consent";
+const POLICY_VERSION = "2026-06-03";
+const GA_ID = "G-6SP5MZXBVP";
 const PRIVACY_URL = "/privacidade";
 
 const CATEGORIES = [
@@ -17,25 +18,27 @@ const CATEGORIES = [
     id: "analytics",
     icon: BarChart3,
     title: "Desempenho e análise",
-    desc: "Ajudam a entender como o site é usado para que possamos melhorá-lo. Os dados são agregados.",
+    desc: "Ajudam a entender como o site é usado para que possamos melhorá-lo. Os dados são agregados e anônimos (Google Analytics).",
   },
   {
     id: "marketing",
     icon: Megaphone,
     title: "Marketing",
-    desc: "Permitem personalizar conteúdo e medir a eficácia das nossas campanhas.",
+    soon: true,
+    desc: "Permitirão personalizar conteúdo e medir a eficácia de campanhas. Ainda não utilizamos cookies de marketing.",
   },
 ];
 
-const ALL_ON = { necessary: true, analytics: true, marketing: true };
+const ALL_ON  = { necessary: true, analytics: true,  marketing: false };
 const ALL_OFF = { necessary: true, analytics: false, marketing: false };
 
+/* ---- persistência ---- */
 function readConsent() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw);
-    if (data.version !== CONSENT_VERSION) return null;
+    if (data.version !== POLICY_VERSION) return null;
     return data;
   } catch {
     return null;
@@ -43,32 +46,32 @@ function readConsent() {
 }
 
 function writeConsent(prefs) {
-  const payload = {
-    version: CONSENT_VERSION,
-    date: new Date().toISOString(),
-    prefs,
-  };
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  } catch {
-    /* localStorage indisponível — falha silenciosa */
-  }
+  const payload = { version: POLICY_VERSION, date: new Date().toISOString(), prefs };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch { /* noop */ }
   applyConsent(prefs);
   return payload;
 }
 
+/* ---- carrega GA dinamicamente (só após opt-in) ---- */
+function loadGA() {
+  if (window.__kl_ga_loaded) return;
+  window.__kl_ga_loaded = true;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+  s.onload = () => {
+    window.gtag("js", new Date());
+    window.gtag("config", GA_ID);
+  };
+  document.head.appendChild(s);
+}
+
 function applyConsent(prefs) {
-  if (typeof window !== "undefined" && typeof window.gtag === "function") {
-    window.gtag("consent", "update", {
-      analytics_storage: prefs.analytics ? "granted" : "denied",
-      ad_storage: prefs.marketing ? "granted" : "denied",
-      ad_user_data: prefs.marketing ? "granted" : "denied",
-      ad_personalization: prefs.marketing ? "granted" : "denied",
-    });
-  }
-  if (typeof window !== "undefined") {
+  if (prefs.analytics) loadGA();
+  if (typeof window !== "undefined")
     window.dispatchEvent(new CustomEvent("kunlatek:consent", { detail: prefs }));
-  }
 }
 
 export function useCookieConsent() {
@@ -94,14 +97,13 @@ const CSS = `
   font-family: 'Hanken Grotesk', sans-serif; -webkit-font-smoothing: antialiased;
 }
 
+/* banner */
 .klc-banner {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000;
-  display: flex; justify-content: center; padding: 18px;
-  pointer-events: none;
+  display: flex; justify-content: center; padding: 18px; pointer-events: none;
 }
 .klc-banner-in {
-  pointer-events: auto;
-  width: 100%; max-width: 960px;
+  pointer-events: auto; width: 100%; max-width: 960px;
   background: var(--surface); border: 1px solid var(--line-strong);
   border-radius: 20px; padding: 24px 26px;
   box-shadow: 0 20px 60px rgba(22,17,40,0.16);
@@ -121,12 +123,13 @@ const CSS = `
 .klc-banner-txt a:hover { text-decoration: underline; }
 .klc-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
+/* botões */
 .klc-btn {
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
   font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; font-size: 14px;
   padding: 11px 18px; border-radius: 11px; border: 1px solid transparent;
   white-space: nowrap; text-decoration: none;
-  transition: transform .2s ease, box-shadow .25s ease, background .2s, border-color .2s, color .2s;
+  transition: transform .2s, box-shadow .25s, background .2s, border-color .2s, color .2s;
 }
 .klc-btn-primary { background: var(--violet); color: #fff; box-shadow: 0 8px 22px rgba(71,17,203,0.22); }
 .klc-btn-primary:hover { background: var(--violet-2); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(71,17,203,0.32); }
@@ -135,6 +138,7 @@ const CSS = `
 .klc-btn-text { background: transparent; color: var(--muted); padding: 11px 8px; }
 .klc-btn-text:hover { color: var(--ink); }
 
+/* modal */
 .klc-overlay {
   position: fixed; inset: 0; z-index: 1001;
   background: rgba(22,17,40,0.42); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
@@ -173,8 +177,20 @@ const CSS = `
 .klc-cat-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .klc-cat-top h4 { font-family: 'Sora', sans-serif; font-weight: 600; font-size: 1.02rem; color: var(--ink); }
 .klc-cat-body p { color: var(--body); font-size: 0.88rem; margin-top: 6px; line-height: 1.5; }
-.klc-locked { font-family: 'Space Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--violet); display: inline-flex; align-items: center; gap: 5px; }
 
+.klc-locked {
+  font-family: 'Space Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--violet);
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.klc-soon {
+  font-family: 'Space Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); border: 1px solid var(--line-strong);
+  border-radius: 999px; padding: 4px 10px;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+
+/* switch */
 .klc-switch { flex: none; position: relative; width: 46px; height: 26px; }
 .klc-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .klc-track { position: absolute; inset: 0; border-radius: 999px; background: var(--line-strong); transition: background .25s; }
@@ -189,12 +205,13 @@ const CSS = `
 .klc-modal-foot { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; padding: 18px 26px 24px; border-top: 1px solid var(--line); }
 .klc-modal-foot .klc-btn-ghost { margin-right: auto; }
 
+/* FAB */
 .klc-fab {
   position: fixed; left: 18px; bottom: 18px; z-index: 999;
   width: 46px; height: 46px; border-radius: 14px; cursor: pointer;
   background: var(--surface); border: 1px solid var(--line-strong); color: var(--violet);
   display: grid; place-items: center; box-shadow: 0 8px 24px rgba(22,17,40,0.12);
-  transition: transform .2s, box-shadow .25s, color .2s, border-color .2s;
+  transition: transform .2s, box-shadow .25s, color .2s, border-color .2s, background .2s;
 }
 .klc-fab:hover { transform: translateY(-3px); color: #fff; background: var(--violet); border-color: var(--violet); box-shadow: 0 12px 30px rgba(71,17,203,0.3); }
 
@@ -207,7 +224,6 @@ const CSS = `
   .klc-modal-foot .klc-btn { flex: 1; justify-content: center; }
   .klc-modal-foot .klc-btn-ghost { margin-right: 0; flex-basis: 100%; }
 }
-
 @media (prefers-reduced-motion: reduce) {
   .klc-banner-in, .klc-overlay, .klc-modal { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
@@ -262,7 +278,7 @@ export default function CookieConsent() {
     setPrefs((p) => (id === "necessary" ? p : { ...p, [id]: !p[id] }));
 
   const showBanner = !decided && !showModal;
-  const showFab = decided && !showModal;
+  const showFab    = decided && !showModal;
 
   return (
     <div className="klc">
@@ -275,21 +291,15 @@ export default function CookieConsent() {
             <div className="klc-banner-txt">
               <h4>A gente usa cookies por aqui 🍪</h4>
               <p>
-                Usamos cookies para fazer o site funcionar, entender como ele é
-                usado e melhorar a sua experiência. Você decide o que aceitar.
-                Saiba mais na nossa <a href={PRIVACY_URL}>Política de Privacidade</a>.
+                Usamos cookies para fazer o site funcionar e entender como ele é usado.
+                Você decide o que aceitar.{" "}
+                <a href={PRIVACY_URL}>Política de Privacidade</a>.
               </p>
             </div>
             <div className="klc-banner-actions">
-              <button className="klc-btn klc-btn-text" onClick={() => setShowModal(true)}>
-                Personalizar
-              </button>
-              <button className="klc-btn klc-btn-ghost" onClick={rejectAll}>
-                Rejeitar
-              </button>
-              <button className="klc-btn klc-btn-primary" onClick={acceptAll}>
-                Aceitar todos
-              </button>
+              <button className="klc-btn klc-btn-text" onClick={() => setShowModal(true)}>Personalizar</button>
+              <button className="klc-btn klc-btn-ghost" onClick={rejectAll}>Rejeitar</button>
+              <button className="klc-btn klc-btn-primary" onClick={acceptAll}>Aceitar todos</button>
             </div>
           </div>
         </div>
@@ -320,6 +330,8 @@ export default function CookieConsent() {
                         <h4>{c.title}</h4>
                         {c.locked ? (
                           <span className="klc-locked"><Check size={12} /> Sempre ativo</span>
+                        ) : c.soon ? (
+                          <span className="klc-soon"><Clock size={11} /> Em breve</span>
                         ) : (
                           <label className="klc-switch">
                             <input
