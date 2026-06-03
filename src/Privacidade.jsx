@@ -16,13 +16,6 @@ const CSS = `
   transition: opacity .2s;
 }
 .priv-back:hover { opacity: 0.75; }
-.priv-draft {
-  display: flex; align-items: center; gap: 10px;
-  background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px;
-  padding: 14px 18px; margin-bottom: 40px;
-  font-size: 0.92rem; color: #92400e;
-}
-.priv-draft strong { font-weight: 700; }
 .priv h1 {
   font-family: 'Sora', sans-serif; font-weight: 700;
   font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--ink);
@@ -49,11 +42,6 @@ export default function Privacidade() {
       <style>{CSS}</style>
       <div className="priv-wrap">
         <a href="/" className="priv-back">← Voltar ao site</a>
-
-        <div className="priv-draft">
-          <span>⚠️</span>
-          <span><strong>Rascunho — não é parecer jurídico.</strong> Este documento deve ser revisado por um advogado antes da publicação definitiva.</span>
-        </div>
 
         <h1>Política de Privacidade</h1>
         <p className="priv-meta">Última atualização: {hoje}</p>
