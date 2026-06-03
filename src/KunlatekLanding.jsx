@@ -257,11 +257,11 @@ body { background: #fbfbfd; }
 
 .kl-cta { position: relative; margin: 0 28px 104px; max-width: 1140px; border-radius: 28px; padding: 76px 40px; text-align: center; overflow: hidden; background: var(--violet); color: #fff; }
 @media (min-width: 1196px) { .kl-cta { margin-left: auto; margin-right: auto; } }
-.kl-cta::before { content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%; top: -180px; left: -120px; background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 60%); animation: glowB 16s ease-in-out infinite; }
-.kl-cta::after { content: ""; position: absolute; width: 460px; height: 460px; border-radius: 50%; bottom: -200px; right: -100px; background: radial-gradient(circle, rgba(91,34,232,0.5), transparent 62%); animation: glowA 14s ease-in-out infinite; }
+.kl-cta::before { content: ""; position: absolute; pointer-events: none; width: 520px; height: 520px; border-radius: 50%; top: -180px; left: -120px; background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 60%); animation: glowB 16s ease-in-out infinite; }
+.kl-cta::after { content: ""; position: absolute; pointer-events: none; width: 460px; height: 460px; border-radius: 50%; bottom: -200px; right: -100px; background: radial-gradient(circle, rgba(91,34,232,0.5), transparent 62%); animation: glowA 14s ease-in-out infinite; }
 .kl-cta h2 { position: relative; font-family: 'Sora'; font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 3.1rem); letter-spacing: -0.03em; line-height: 1.06; }
 .kl-cta p { position: relative; color: rgba(255,255,255,0.85); margin: 16px auto 0; max-width: 48ch; font-size: 1.08rem; }
-.kl-cta-btns { position: relative; display: flex; flex-wrap: wrap; gap: 13px; justify-content: center; margin-top: 34px; }
+.kl-cta-btns { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 13px; justify-content: center; margin-top: 34px; }
 .kl-cta .kl-btn-outline { background: transparent; color: #fff; border-color: rgba(255,255,255,0.42); }
 .kl-cta .kl-btn-outline:hover { border-color: #fff; color: #fff; }
 
