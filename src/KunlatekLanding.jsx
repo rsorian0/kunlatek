@@ -104,7 +104,9 @@ const CSS = `
   -webkit-font-smoothing: antialiased; line-height: 1.55;
 }
 .kl ::selection { background: var(--violet-100); color: var(--violet); }
+html, body, #root { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+body { background: #fbfbfd; }
 .kl [id] { scroll-margin-top: 92px; }
 
 .kl-progress { position: fixed; top: 0; left: 0; right: 0; height: 2.5px; z-index: 60; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--violet), var(--violet-2)); will-change: transform; }
