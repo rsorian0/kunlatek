@@ -31,13 +31,7 @@
       rel="stylesheet"
     />
 
-    <!--
-      ============================================================
-      GOOGLE CONSENT MODE v2 (opcional)
-      Descomente e troque G-XXXXXXX pelo seu ID do Google Analytics.
-      O padrão "denied" garante que nada de análise/marketing rode
-      ANTES do usuário consentir — o módulo de cookies atualiza isso.
-      ============================================================
+    <!-- Google Consent Mode v2 — padrão negado até o usuário consentir -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -48,11 +42,16 @@
         ad_personalization: 'denied',
         wait_for_update: 500
       });
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXX');
     </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-    -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6SP5MZXBVP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-6SP5MZXBVP');
+    </script>
   </head>
   <body>
     <div id="root"></div>
